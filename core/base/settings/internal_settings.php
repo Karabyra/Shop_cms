@@ -1,4 +1,7 @@
 <?php
+
+use core\base\exceptions\RouteException;
+
 defined('VG_ACCESS') or die('access denied');
 
 const TEMPLATE = 'templates/default/';
@@ -21,3 +24,16 @@ const USER_CSS_JS = [
     'style'=>[],
     'scripts'=> []
 ];
+
+
+
+function autoloadMainClasses($class_name)
+{
+    $class_name = str_replace('\\','/', $class_name);
+    include  $class_name . '.php';
+    if(!@include_once $class_name . '.php'){
+        throw new RouteException('Не верное имя файла для подключения -'.$class_name);
+    }
+}
+
+spl_autoload_register('autoloadMainClasses');
