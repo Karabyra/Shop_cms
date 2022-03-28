@@ -19,8 +19,7 @@ require_once 'libraries/print.php';
 
 try
 {
-    $b = Settings::get('routes');
-    $a = ShopSettings::instance();
+   RouteController::getInstance();
 }
 catch (RouteException $e)
 {

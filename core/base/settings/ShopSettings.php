@@ -9,9 +9,16 @@ class ShopSettings
 {
     static private $_instance;
     private $baseSettings;
-    private $test = [
-        'name'=>'vasya'
+
+    private $routes = [
+        'admin'=>[
+            'alias'=>'admin',
+            'path'=>'core/admin/controllers/',
+            'hrUrl'=>false,
+            'dir'=>false
+        ]
     ];
+
     private $templateArr=[
         'text'=>['name','phone','address', 'price','short'],
         'textarea'=>['content','keywords','goods_content']
