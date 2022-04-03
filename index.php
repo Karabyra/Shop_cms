@@ -1,8 +1,10 @@
 <?php
 use core\base\exceptions\RouteException;
 use core\base\controllers\RouteController;
+use core\base\controllers\SecondRoute;
 use core\base\settings\Settings;
 use core\base\settings\ShopSettings;
+
 
 define('VG_ACCESS', true);
 
@@ -19,7 +21,8 @@ require_once 'libraries/print.php';
 
 try
 {
-   RouteController::getInstance();
+   $a = SecondRoute::getInstance();
+   printR($a);
 }
 catch (RouteException $e)
 {

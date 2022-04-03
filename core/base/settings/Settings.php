@@ -76,12 +76,14 @@ class Settings
         ],
         'plugins'=>[
             'path'=>'core/plugins/',
-            'hrUrl'=>false
+            'hrUrl'=>false,
+            'dir'=>false
         ],
         'user'=>[
             'path'=>'core/user/controllers/',
             'hrUrl'=>true,
             'routes'=>[
+                'catalog'=>'site/input/output'
             ]
         ],
         'default'=>[

@@ -30,24 +30,31 @@ class RouteController
     private function __construct()
     {
        $adressStr = $_SERVER['REQUEST_URI'];
-
+            // Проверка на наличие / в концеcтроки и редирект если он присутствует
        if(strrpos($adressStr,'/') === strlen($adressStr) -1 && strrpos($adressStr,'/') !== 0){
             $this->redirect(rtrim($adressStr,'/'),301);
        }
-       $path = substr($_SERVER['PHP_SELF'], 0,strpos($_SERVER['PHP_SELF'],'index.php'));
-
+            //  Обрезаная строка имини виполненого скрипта
+       $path = substr($_SERVER['PHP_SELF'],0,strpos($_SERVER['PHP_SELF'],'index.php'));
+            // Проверка маршрута с константой и получения класса настроек
        if($path === PATH){
-
         $this->routes = Settings::get('routes');
-        if(!$this->routes)throw new RouteException('Settings::route watning');
+            // Exctprion если настройки маршрутов не подключени
+        if(!$this->routes)throw new RouteException(' маршрутов не подключени');
 
         // admin
         if(strpos($adressStr,$this->routes['admin']['alias']) === strlen(PATH)){
+            // создание масива маршрутов
             $url = explode('/',substr($adressStr,strlen(PATH . $this->routes['admin']['alias'])+1));
+            // проверка на запрос пути к плагину
             if($url[0] && is_dir($_SERVER['DOCUMENT_ROOT'] . PATH . $this->routes['plugins']['path'] . $url[0])){
+            // выкидуем название плагина из масива марутов
                 $plugin = array_shift($url);
+                // путь к файлу настроек плагина
                 $pluginSettings = $this->routes['settings']['path'].ucfirst($plugin . 'Settings');
+                // проверка на существование файла
                 if(file_exists($_SERVER['DOCUMENT_ROOT'] . PATH . $pluginSettings . '.php')){
+                    
                     $pluginSettings = str_replace('/','\\',$pluginSettings);
                     $this->routes = $pluginSettings::get('routes');
                 }
@@ -60,21 +67,29 @@ class RouteController
 
 
             }else{
+
                 $this->controller = $this->routes['admin']['path'];
+                   // human readable url
                 $hrUrl = $this->routes['admin']['hrUrl'];
                 $route = 'admin';
             }
     
         }else{
          // user
+        //  делим адресную строку по / в массив
             $url = explode('/',substr($adressStr,strlen(PATH)));
+            // human readable url
             $hrUrl = $this->routes['user']['hrUrl'];
+            // подключение пользевательского маршрута
             $this->controller = $this->routes['user']['path'];
             $route = 'user';
         }
+
         $this->createRoute($route,$url);
 
+
         if($url[1]){
+            // количество елементов масива
             $count = count($url);
             $key = '';
             if(!$hrUrl){
@@ -103,15 +118,18 @@ class RouteController
            }
        }
     }
+
     private function createRoute(string $var, array $arr )
     {
         $route = [];
         if(!empty($arr[0])){
+            // проверка на наличие маршрута
             if($this->routes[$var]['routes']){
+            // добавление маршрута в масив route
                 $route = explode('/',$this->routes[$var]['routes'][$arr[0]]);
-                $this->controller .= ucfirst($route[0].'Controller');
+                $this->controller .= ucfirst($route[0].'indexController');
             }else{
-                    $this->controller .= ucfirst($route[0].'Controller');
+                    $this->controller .= ucfirst($route[0].'indexController');
             }
         }else{
             $this->controller .= $this->routes['default']['controller'];
